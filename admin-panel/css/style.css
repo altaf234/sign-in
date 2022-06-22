@@ -27,7 +27,7 @@ body {
   margin: 0;
 }
 
-.user a {
+a {
   margin-left: auto;
   text-decoration: none;
   color: blue;
@@ -37,7 +37,7 @@ body {
   transition: all 800ms ease;
 }
 
-.user a:hover {
+a:hover {
   background-color: #8590FFA1;
   color: #fff;
 }
