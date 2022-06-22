@@ -24,10 +24,18 @@ form {
   gap: 10px;
 }
 
-input {
+input, button {
   border: none;
   background-color: hsla(270, 0%, 96%, 1);
-  border-radius: 100px;
+  border-radius: 3px;
   padding: 5px;
-  font-size: 20px;
+  font-size: 14px;
+}
+
+input:focus {
+  outline: none;
+}
+
+#errorLog {
+  text-align: center;
 }
