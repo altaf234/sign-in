@@ -15,6 +15,10 @@ body {
   background-color: #fff;
   padding: 20px;
   border-radius: 5px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 10px;
 }
 
 form {
@@ -22,14 +26,23 @@ form {
   flex-direction: column;
   align-items: center;
   gap: 10px;
+  margin: 0 0 20px 0;
 }
 
 input, button {
   border: none;
-  background-color: hsla(270, 0%, 96%, 1);
+  background-color: hsl(270, 0%, 96%);
   border-radius: 3px;
   padding: 5px;
   font-size: 14px;
+}
+
+button:not(#google) {
+  background-color: #B3B3B3;
+}
+
+button:is(#google) {
+  background-color: #4285F4;
 }
 
 input:focus {
@@ -37,5 +50,24 @@ input:focus {
 }
 
 #errorLog {
+  color: red;
+}
+
+.loader{
+  height: 100px;
+  width: 100px;
   text-align: center;
+  position: absolute;
+  top: 50vh;
+  left: 50vw;
+  transform: translate(-50%, -50%);
+  display: none;
+}
+
+/*
+  Set the color of the icon
+*/
+svg path,
+svg rect{
+  fill: #FF6700;
 }

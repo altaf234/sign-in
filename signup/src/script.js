@@ -1,12 +1,19 @@
 import { initializeApp } from "https://www.gstatic.com/firebasejs/9.8.3/firebase-app.js";
 import {
   getAuth,
-  createUserWithEmailAndPassword
+  createUserWithEmailAndPassword,
+  GoogleAuthProvider,
+  signInWithPopup,
+  onAuthStateChanged
 } from "https://www.gstatic.com/firebasejs/9.8.3/firebase-auth.js";
 import {
-  collection,
-  addDoc,
-  Timestamp
+  doc,
+  setDoc,
+  Timestamp,
+  getFirestore,
+  getDocs,
+  query,
+  where
 } from "https://www.gstatic.com/firebasejs/9.8.3/firebase-firestore.js";
 const firebaseConfig = {
   apiKey: "AIzaSyBazM9WfcjGILh7KNRIWHETR7_muMBZq1Q",
@@ -20,22 +27,86 @@ const firebaseConfig = {
 // Initialize Firebase
 initializeApp(firebaseConfig);
 
-window.signUp = function() {
+if (getAuth().currentUser) {
+  location.replace('/app');
+}
+
+function showErr(err) {
+  document.getElementById('errorLog').textContent = err;
+}
+
+let doing;
+let authChanged;
+
+onAuthStateChanged(getAuth(), (user) => {
+  if (user) {
+    if (authChanged) {
+      return;
+    }
+    location.replace('/app');
+  }
+  else {
+    authChanged = true;
+  }
+})
+
+function setDoing(value) {
+  document.querySelector('.loader').style.display = value ? 'initial' : 'none';
+  doing = value;
+}
+
+setDoing(false);
+
+window.signUp = async function() {
+  if (doing) {
+    return;
+  }
+  setDoing(true);
   const target = document.querySelector('form');
   createUserWithEmailAndPassword(getAuth(), target.email.value, target.password.value)
-    .then((userCred) => {
-      addDoc(collection(getFirestore(), "users"), {
+    .then(async (userCred) => {
+      setDoc(doc(getFirestore(), "users", userCred.user.uid), {
         name: target.name.value,
         email: target.email.value,
         uid: userCred.user.uid,
         createdAt: Timestamp.fromDate(new Date())
+      }).then(() => {
+        setDoing(false);
+        location.replace('/app');
       })
     })
     .catch((err) => {
+      setDoing(false);
       if (err.message == "Firebase: Error (auth/email-already-in-use).") {
-        document.getElementById('errorLog').textContent = "email already in use!";
+        showErr('email already in use')
       }
-      console.log(target.email.value, target.password.value)
-      throw err;
+      else {
+        showErr(err.message);
+      }
     })
 }
+
+document.getElementById('google').addEventListener('click', async (e) => {
+  if (doing) {
+    return;
+  }
+  setDoing(true);
+  const provider = new GoogleAuthProvider();
+  signInWithPopup(getAuth(), provider)
+    .then(async (userCred) => {
+      const user = userCred.user;
+      setDoc(doc(getFirestore(), "users", user.uid), {
+        name: user.displayName,
+        email: user.email,
+        uid: user.uid,
+        createdAt: Timestamp.fromDate(new Date())
+      }).then(() => {
+        setDoing(false);
+        location.replace('/app');
+      });
+    })
+    .catch((err) => {
+      setDoing(false);
+      showErr(err.message);
+    })
+})

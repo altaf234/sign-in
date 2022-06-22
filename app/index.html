@@ -9,7 +9,33 @@
 
 <body>
   <h1>Thanks!</h1>
-  <p>thanks for your support we will mail you under 96 hours</p>
+  <p>thanks for your support we will mail you under 24 hours</p>
+  <button>sign out</button>
+  <script type="module">
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/9.8.3/firebase-app.js";
+    import {
+      getAuth,
+      signOut
+    } from "https://www.gstatic.com/firebasejs/9.8.3/firebase-auth.js";
+
+    const firebaseConfig = {
+      apiKey: "AIzaSyBazM9WfcjGILh7KNRIWHETR7_muMBZq1Q",
+      authDomain: "email-marketing-55161.firebaseapp.com",
+      projectId: "email-marketing-55161",
+      storageBucket: "email-marketing-55161.appspot.com",
+      messagingSenderId: "647097765896",
+      appId: "1:647097765896:web:ce58b3ce8c528f2a9901bd"
+    };
+
+    // Initialize Firebase
+    initializeApp(firebaseConfig);
+    
+    document.querySelector('button').addEventListener('click', () => {
+      getAuth().currentUser && signOut(getAuth()).then(() => {
+        location.replace('/signup');
+      })
+    })
+  </script>
 </body>
 
 </html>
